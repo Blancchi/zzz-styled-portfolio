@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: theme("colors.base.deep");
+  scroll-behavior: auto; /* Lenis takes over scroll physics */
+}
+
+body {
+  @apply bg-base text-white font-body antialiased;
+  overflow-x: hidden;
+}
+
+/* Lenis requires this to not fight native smooth-scroll / scroll-snap */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Fixed CRT scanline + grid backdrop, sits behind all content */
+.hud-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: theme("backgroundImage.grid-pattern");
+  background-size: theme("backgroundSize.grid");
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+}
+
+.hud-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background-image: theme("backgroundImage.scanlines");
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+/* Subtle CRT noise texture, cheap CSS-only version */
+.hud-noise {
+  position: fixed;
+  inset: -10%;
+  z-index: 39;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: noise-shift 0.5s steps(2) infinite;
+}
+
+::selection {
+  background: theme("colors.acid.DEFAULT");
+  color: theme("colors.base.deep");
+}
+
+:focus-visible {
+  outline: 2px solid theme("colors.acid.DEFAULT");
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
